@@ -11,15 +11,64 @@ import java.util.Scanner;
 public class Phonebook {
 
 	private ContactCard[] contacts;
-	private static final String path = "C:\\Users\\Charmaine\\Documents\\Phonebook\\";
+	private String path;
 	
 	public Phonebook() {
 		contacts = new ContactCard[0];
+		this.path = "C:\\Users\\Charmaine\\Documents\\Phonebook\\";
+	}
+	
+	public Phonebook(ContactCard[] contacts, String path) {
+		this.contacts = contacts;
+		this.path = path;
 	}
 	
 	public void createContactCard(String contactInfo) {
 		//create ContactCard object using the contactInfo passed
 		ContactCard newContact = new ContactCard(contactInfo);
+		//add it to the contacts array for this phonebook
+		this.addNewCCToContacts(newContact);
+	}
+	
+	
+	public void createContactCardFromFile(String contactInfo) {
+		//create blank ContactCard
+		ContactCard newContact = new ContactCard();
+//		String contactInfo += "-"; //at end so we can sense notes
+		//split the contactInfo string into several strings based on , delimiter
+		String[] items = contactInfo.split(",");
+			for (int i=0; i<7; i++) {
+				switch(i) {
+				case 0:
+					String nameString = items[i].trim();
+					newContact.setName(new Name(nameString));
+					break;
+				case 1:
+					newContact.setStreetAddress(items[i].trim());
+					break;
+				case 2:
+					newContact.setCity(items[i].trim());
+					break;
+				case 3:
+					newContact.setState(items[i].trim());
+					break;
+				case 4:
+					String zipCodeString = items[i].trim();
+					newContact.setZipCode(Integer.parseInt(zipCodeString));
+					break;
+				case 5:
+					String phoneString = items[i].trim();
+					newContact.setPhone(Long.parseLong(phoneString));
+					break;
+				case 6:
+					newContact.setNotes(items[i].trim());
+					break;
+				}
+			}
+		this.addNewCCToContacts(newContact);
+	}
+	
+	public void addNewCCToContacts(ContactCard newContact) {
 		//look through all current contacts
 		for (int i=0; i<contacts.length; i++) {
 			//see if a contact with this phone number already exists - if so, inform the user and exit this method
@@ -295,7 +344,7 @@ public class Phonebook {
 			while(scanner.hasNextLine()) {
 				String contactInfo = scanner.nextLine();
 				//above line will look like john, doe, address, etc
-				this.createContactCard(contactInfo);
+				this.createContactCardFromFile(contactInfo);
 			}
 		}catch(FileNotFoundException e) {
 			System.out.println("Error reading from file");

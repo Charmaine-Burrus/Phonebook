@@ -13,12 +13,31 @@ public class ContactCard implements Comparable<ContactCard> {
 	private int zipCode;
 	private long phone;
 	private String notes;
-	private static final String path = "C:\\Users\\Charmaine\\Documents\\Phonebook\\";
+	private String path;
 	
+	//constructor used when entering a card manually from application
 	//a new object is initialized by separating all the contact info and storing it in the correct instance variable via the parseContactInfo method below
-	//WOULD IT BE BETTER TO PARSE IN THE APPLICATION AND CREATE A CONSTRUCTOR WITH ARGUMENTS THAT CORRESPOND TO THE INSTANCE VARIABLES?
 	public ContactCard(String contactInfo) {
 		parseContactInfo(contactInfo);
+		this.notes = "";
+		this.path = "C:\\Users\\Charmaine\\Documents\\Phonebook\\";
+	}
+	
+	//constructor used when adding a card from file (b/c it will have notes)
+	public ContactCard() {
+
+	}
+	
+	//allows user to set everything, including filepath
+	public ContactCard(Name name, String streetAddress, String city, String state, int zipCode, long phone, String notes, String path) {
+		this.name = name;
+		this.streetAddress = streetAddress;
+		this.city = city;
+		this.state = state;
+		this.zipCode = zipCode;
+		this.phone = phone;
+		this.notes = notes;
+		this.path = path;
 	}
 	
 	public void setName(Name name) {
@@ -153,7 +172,7 @@ public class ContactCard implements Comparable<ContactCard> {
 	}
 	
 	public void addToNotes(String input) {
-		this.notes += ("\n" + input);
+		this.notes += ("\t" + input);
 	}
 	
 }

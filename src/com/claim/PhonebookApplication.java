@@ -73,18 +73,14 @@ public class PhonebookApplication {
 					
 				case 2:
 					//View All Contact Cards
-					//Printing the phoneBook object by using its .toString() method which orders the objects in its' contacts array alphabetically by first name with each ContactCard
-					//on a new line.. this looks clean when printed
+					//Printing the phoneBook object by using its .toString() method which orders the objects in its' contacts array alphabetically by first name
+					//each ContactCard is on a new line.. this looks clean when printed
 					System.out.println("Here are all of your contacts:\n" + phoneBook + "Glad you have friends!");
 					break;
 				
 				case 3: 
 					//Update a Card
-					//prompting user for phone number to search by
-//					System.out.println("Enter the phone number of the ContactCard you'd like to update.\nUse the following format: 5553334444");
-//					long phoneNumber = input.nextLong();
-//					//this gets past the nextLine, so when I call .nextLine below it will be on the right line
-//					input.nextLine();
+					//this method prompts user for phone number to search by, returns that number, and consumes that line
 					long phoneNumber = getPhonefromUser(input);
 					//if this contactCard exists, 
 					if (confirmCard(phoneNumber, phoneBook)) {
@@ -95,10 +91,9 @@ public class PhonebookApplication {
 						switch(subMenuChoice) {
 						case 1:
 							System.out.println("Enter the updated first name");
-							//COULD INCLUDE A TRY&CATCH THESE IN CASE THEY ENTER MORE THAN ONE WORD
+							//COULD INCLUDE A TRY&CATCH FOR THESE IN CASE THEY ENTER MORE THAN ONE WORD
 							phoneBook.updateCCFirstName(phoneNumber, input.nextLine());
 							break;
-							//IS IT GOOD TO DO LIKE I DID ABOVE AND HAVE EVERYTHING GO THROUGH PHONEBOOK OR SHOULD I HAVE PUT THAT STUFF OUT HERE IN THE APPLICATION?
 						case 2: 
 							System.out.println("Enter the updated last name");
 							phoneBook.updateCCLastName(phoneNumber, input.nextLine());
@@ -138,11 +133,7 @@ public class PhonebookApplication {
 				
 				case 4:
 					//Delete a Card
-					//prompting user for phone number to search by
-//					System.out.println("Enter a phone number to delete in the following format: 5553334444");
-//					phoneNumber = input.nextLong();
-//					//this gets past the nextLine, so when I call .nextLine below it will be on the right line
-//					input.nextLine();
+					//this method prompts user for phone number to search by, returns that number, and consumes that line
 					phoneNumber = getPhonefromUser(input);
 					//check that this contactCard exists, 
 					if (confirmCard(phoneNumber, phoneBook)) {
@@ -179,8 +170,6 @@ public class PhonebookApplication {
 						System.out.println(phoneBook.getContactsWithFullName(fullName));
 						break;
 					case 4:
-//						System.out.println("Enter a phone number to search for in the following format: 5553334444");
-//						phoneNumber = input.nextLong();
 						phoneNumber = getPhonefromUser(input);
 						if (phoneBook.getContactCard(phoneNumber) == null) {
 							System.out.println("No contacts found with this info");
@@ -207,11 +196,7 @@ public class PhonebookApplication {
 					
 				case 6:
 					//Add Notes
-					//prompting user for phone number to search by
-//					System.out.println("Enter the phone number of the ContactCard.\nUse the following format: 5553334444");
-//					long phoneNum = input.nextLong();
-//					//this gets past the nextLine, so when I call .nextLine below it will be on the right line
-//					input.nextLine();
+					//this method prompts user for phone number to search by, returns that number, and consumes that line
 					long phoneNum = getPhonefromUser(input);
 					//if this contactCard exists, 
 					if (confirmCard(phoneNum, phoneBook)) {
@@ -221,7 +206,7 @@ public class PhonebookApplication {
 						switch(notesMenuChoice) {
 						case 1:
 							//view notes
-							if (phoneBook.getContactCard(phoneNum).getNotes() == null) {
+							if (phoneBook.getContactCard(phoneNum).getNotes().isEmpty()) {
 								System.out.println("This contact doesn't have any notes yet.");
 							}
 							else {
@@ -229,41 +214,17 @@ public class PhonebookApplication {
 							}
 							break;
 						case 2: 
-							//Add to notes
+							//Add to notes - user can add multiple lines of notes
 							System.out.println("Enter your notes here");
-							String notes = "";
-							while (input.hasNextLine()) {
-								String noteAdd = input.nextLine();
-								if (noteAdd.isEmpty()) {
-									break;
-								}
-								else {
-								notes = notes +"\n" + noteAdd;
-								}
-							}
-							if (phoneBook.getContactCard(phoneNum).getNotes() == null) {
-								phoneBook.getContactCard(phoneNum).setNotes(notes);
-							}
-							else {
-								String origNotes = phoneBook.getContactCard(phoneNum).getNotes();
-								phoneBook.getContactCard(phoneNum).setNotes(origNotes + "\n" + notes);
-							}
+							String notes = getNewNotesFromUser(input);
+							phoneBook.getContactCard(phoneNum).addToNotes(notes);
 							System.out.println("These notes have been added.");
 							break;
 						case 3:
-							//Erase or write over the notes
+							//Erase or write over the notes - again user can add multiple lines of notes
 							System.out.println("Enter the new notes here - these will overwrite the old notes. \nIf you want to simply erase the notes, enter a blank line");
-							String notez = "";
-							while (input.hasNextLine()) {
-								String noteAdd1 = input.nextLine();
-								if (noteAdd1.isEmpty()) {
-									break;
-								}
-								else {
-								notez += ("\n" + noteAdd1);
-								}
-							}
-							phoneBook.getContactCard(phoneNum).setNotes(notez);
+							notes = getNewNotesFromUser(input);
+							phoneBook.getContactCard(phoneNum).setNotes(notes);
 							System.out.println("These notes have been added.");
 							break;
 						default: 
@@ -281,9 +242,6 @@ public class PhonebookApplication {
 					switch(saveMenuInput) {
 					case 1:
 						//save a single ContactCard
-//						System.out.println("Enter the phone number of the contact you'd like to save");
-//						long phoneNum1 = input.nextLong();
-//						input.nextLine();
 						long phoneNum1 = getPhonefromUser(input);
 						ContactCard ccToSave = phoneBook.getContactCard(phoneNum1);
 						ccToSave.saveToFile();
@@ -422,6 +380,23 @@ public class PhonebookApplication {
 		//this gets past the nextLine, so when I call .nextLine below it will be on the right line
 		input.nextLine();
 		return phoneNumber;
+	}
+	
+	public static String getNewNotesFromUser(Scanner input) {
+		String notes = "";
+		while (input.hasNextLine()) {
+			String noteAdd = input.nextLine();
+			if (noteAdd.isEmpty()) {
+				break;
+			}
+			else {
+				if (!notes.isEmpty()) {
+					notes += "\t";
+				}
+				notes += noteAdd;
+			}
+		}
+		return notes;
 	}
 
 }
