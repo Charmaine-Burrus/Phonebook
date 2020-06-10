@@ -123,12 +123,12 @@ public class ContactCard implements Comparable<ContactCard> {
 		String phoneString = Long.toString(phone);
 		//could prbly make this better
 		String modPhoneString = '(' + phoneString.substring(0, 3) + ')' + '-' + phoneString.substring(3, 6) + '-' + phoneString.substring(6);
-		fullContactCard = fullContactCard + " " + "\tTelephone: " + modPhoneString;
+		fullContactCard = fullContactCard + " " + "\tTelephone: " + modPhoneString + "\tNotes: " + notes;
 		return fullContactCard;
 	}	
 	
 	public String formatData() {
-		return name + ", " + streetAddress + ", " + city + ", " + state + ", " + zipCode + ", " + phone;
+		return name + ", " + streetAddress + ", " + city + ", " + state + ", " + zipCode + ", " + phone + ", " + notes;
 	}
 	
 	public void saveToFile() {
